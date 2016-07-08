@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+lib_path = File.dirname(__FILE__) + '/../lib'
+if Dir.exist?(lib_path)
+  $LOAD_PATH << lib_path
+end
+require 'colored2'
+require 'dupervisor'
+require 'awesome_print'
+
+cli = Dupervisor::CLI.new(ARGV)
+begin
+  options = cli.parse
+  ap options
+rescue Dupervisor::CLI::CommandLineArgumentError => e
+  STDERR.puts 'Usage error: ' + e.message.bold.red
+  puts
+  Dupervisor::CLI.new(['--help']).parse
+end
+
+

@@ -1,0 +1,49 @@
+supervisord:
+  childlogdir: /tmp
+  directory: /tmp
+  environment: KEY1="value1",KEY2="value2"
+  identifier: supervisor
+  logfile: /tmp/supervisord.log
+  logfile_backups: 10
+  logfile_maxbytes: 50MB
+  loglevel: info
+  minfds: 1024
+  minprocs: 200
+  nocleanup: true
+  nodaemon: false
+  pidfile: /tmp/supervisord.pid
+  strip_ansi: false
+  umask: 022
+  user: chrism
+
+program:
+  cat:
+    autorestart: unexpected
+    autostart: true
+    command: /bin/cat
+    directory: /tmp
+    environment: A="1",B="2"
+    exitcodes: 0,2
+    killasgroup: false
+    numprocs: 1
+    priority: 999
+    process_name: %(program_name)s
+    redirect_stderr: false
+    serverurl: AUTO
+    startretries: 3
+    startsecs: 10
+    stderr_capture_maxbytes: 1MB
+    stderr_events_enabled: false
+    stderr_logfile: /a/path
+    stderr_logfile_backups: 10
+    stderr_logfile_maxbytes: 1MB
+    stdout_capture_maxbytes: 1MB
+    stdout_events_enabled: false
+    stdout_logfile: /a/path
+    stdout_logfile_backups: 10
+    stdout_logfile_maxbytes: 1MB
+    stopasgroup: false
+    stopsignal: TERM
+    stopwaitsecs: 10
+    umask: 022
+    user: chrism

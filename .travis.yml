@@ -1,0 +1,15 @@
+language: ruby
+env:
+  - CODECLIMATE_REPO_TOKEN=
+rvm:
+  - 2.2.3
+  - 2.3.0
+script: "gem install bundler --version 1.12.5 --no-ri --no-rdoc; bundle exec rspec"
+notifications:
+  slack:
+    rooms:
+  email:
+    recipients:
+      - kigster@gmail.com
+    on_success: change
+    on_failure: always
