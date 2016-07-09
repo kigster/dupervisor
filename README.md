@@ -4,15 +4,19 @@
 [![Test Coverage](https://codeclimate.com/github/kigster/dupervisor/badges/coverage.svg)](https://codeclimate.com/github/kigster/dupervisor/coverage)
 [![Issue Count](https://codeclimate.com/github/kigster/dupervisor/badges/issue_count.svg)](https://codeclimate.com/github/kigster/dupervisor)
 
-# DuperVisor &tm;
+# DuperVisor™ Pro 
 
-The super-duper awesome DuperVisor gem is your helper if you want to use a great tool called __supervisord__, which is highly applicable today, but unfortunately uses an [archaic configuration file format](http://supervisord.org/configuration.html) of the decades old Windows INI files (Yuck!)
+The super-duper awesome library is your best friend if you want an easy way to convert configuration between any one of the supported formats, which at this time are: JSON, YAML, and Windows INI format. 
 
-And while we can try to forgive the authors for using Windows environment variable format like %BOOO% (yuck!), but we just could not deal with the INI format. Something had to be done about it.
+This tool was originally created to allow storing configs of another great tool called [__supervisord__](http://supervisord.org), which is still highly applicable today, but unfortunately uses a rather [archaic configuration file format](http://supervisord.org/configuration.html) of the decades old Windows INI format.
+
+Whatever your preferences are, the truth is that some of the modern DevOps tools (such as Ansible and SaltStack) are using YAML format extensively to configure the environments. Ability to "embed" YAML configuration for a tool like supervisord means that you don't have to go to multiple places to see what is being run everywhere.
+
+If you enjoy using this converted, please star the repo and we very much welcome all pull requests and contributions.
 
 ## YAML/JSON vs INI
 
-Consider the following example taken from the (_supervisord_ configuration documentation)[http://supervisord.org/configuration.html]:
+Consider the following example taken from the [_supervisord_ configuration documentation](http://supervisord.org/configuration.html]):
 
 ```ini
 [supervisord]
