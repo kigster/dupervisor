@@ -129,7 +129,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/kigste
 #### Acknowledgements
 
  * [Shippo, Inc.](https://goshippo.com/) for sponsoring this work financially, and their commitment to open source.
- * [Wissam Jarjoul](https://github.com/bosswissam) for many great ideas and for being a great partner.
+ * [Wissam Jarjoul](https://github.com/bosswissam) for many great ideas and a good eye for bugs.
 
 ## License
 
