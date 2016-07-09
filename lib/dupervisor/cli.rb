@@ -4,21 +4,18 @@ require 'ostruct'
 require 'pp'
 require_relative 'config'
 
-module Dupervisor
+module DuperVisor
   class CLI
-    class CommandLineArgumentError < ArgumentError;
-    end
-
     attr_accessor :args, :config, :parser
 
     def initialize(args)
-      self.args    = args.dup
+      self.args    = args
       self.config = Config.new
     end
 
     def parse
       self.parser = OptionParser.new do |opts|
-        opts.banner = 'Usage: '.bold.blue + 'dupervisor [options]'.bold.green
+        opts.banner = 'Usage: '.bold.blue + 'DuperVisor [options] [source-file]'.bold.green
         opts.separator ''
         opts.separator '       Convert between several hierarchical configuration'
         opts.separator '       file formats, such as ' + 'ini, yaml, json'.bold.green
@@ -35,16 +32,10 @@ module Dupervisor
           config.to = :json
         end
 
-        opts.on('-i', '--input [FILE]',
-                'File to read, if not supplied read from STDIN',
-                'If provided, will be used to guess source format') do |file|
-          config.input << file
-        end
-
         opts.on('-o', '--output [FILE]',
                 'File to write, if not supplied write to STDOUT',
                 'If provided, will be used to guess destination format') do |file|
-          config.input << file
+          config.output = file
         end
 
         opts.on('-v', '--verbose',
@@ -54,11 +45,11 @@ module Dupervisor
         opts.separator ''
         opts.separator 'Examples:'.bold.blue
         opts.separator ''
-        opts.separator '    # guess input format, write output in INI'
-        opts.separator '    cat config.yml | dupervisor --ini > config.ini'.green
+        opts.separator '    # guess input format, convert YAML format to an INI file'
+        opts.separator '    cat config.yml | DuperVisor --ini > config.ini'.green
         opts.separator ''
-        opts.separator '    # convert from INI to JSON using file extensions for format '
-        opts.separator '    dupervisor -i config.ini -f config.json'.green
+        opts.separator '    # guess input format, convert INI format to a JSON file '
+        opts.separator '    DuperVisor --json config.ini > config.json'.green
 
         opts.separator ''
         opts.separator 'Common options:'.bold.blue
@@ -72,20 +63,15 @@ module Dupervisor
 
         # Another typical switch to print the version.
         opts.on_tail('--version', 'Show version') do
-          puts Dupervisor::VERSION
+          puts DuperVisor::VERSION
           exit
         end
       end
 
       parser.parse!(args)
-      validate!
+
+
       config
-    end
-
-    # parse()
-
-    def validate!
-      raise CommandLineArgumentError.new('Either the output format or filename is required!') unless config.to
     end
   end
 end

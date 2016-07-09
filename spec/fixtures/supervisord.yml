@@ -27,7 +27,7 @@ program:
     killasgroup: false
     numprocs: 1
     priority: 999
-    process_name: %(program_name)s
+    process_name: '%(program_name)s'
     redirect_stderr: false
     serverurl: AUTO
     startretries: 3

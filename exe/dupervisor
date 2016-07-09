@@ -7,14 +7,10 @@ require 'colored2'
 require 'dupervisor'
 require 'awesome_print'
 
-cli = Dupervisor::CLI.new(ARGV)
 begin
-  options = cli.parse
-  ap options
-rescue Dupervisor::CLI::CommandLineArgumentError => e
+  DuperVisor::Main.new(DuperVisor::CLI.new(ARGV).parse).run
+rescue DuperVisor::CLIError => e
   STDERR.puts 'Usage error: ' + e.message.bold.red
   puts
-  Dupervisor::CLI.new(['--help']).parse
+  DuperVisor::CLI.new(['--help']).parse
 end
-
-

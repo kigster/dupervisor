@@ -1,8 +1,13 @@
 require 'spec_helper'
+require 'dupervisor/detector'
 
-module Dupervisor
-  RSpec.describe Detector do
-    let(:config) { Config.new(input: input, output: output) }
+module DuperVisor
+  RSpec.describe ExtensionDetector do
+    before do
+      expect(ARGF).to receive(:filename).and_return(input)
+    end
+
+    let(:config) { Config.new(output: output) }
     let(:bogus_dir) { '/Users/kig/tmp/' }
     let(:ini) { bogus_dir + 'file_whatever.ini' }
     let(:yml) { bogus_dir + 'some_other_file.yml' }
@@ -15,13 +20,13 @@ module Dupervisor
         context "and the format is #{format}" do
           let(:input) { send(format) }
           let(:output) { send(format) }
-          let(:detector) { Detector.new(config) }
+          let(:detector) { ExtensionDetector.new(config) }
           context 'input' do
-            subject { detector.detect_input }
+            subject { detector.detect }
             it { is_expected.to eql(mapping[format]) }
           end
           context 'output' do
-            subject { detector.detect_output }
+            subject { detector.detect }
             it { is_expected.to eql(mapping[format]) }
           end
         end

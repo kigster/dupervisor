@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Dupervisor do
+describe DuperVisor do
   it 'has a version number' do
-    expect(Dupervisor::VERSION).not_to be nil
+    expect(DuperVisor::VERSION).not_to be nil
   end
 end

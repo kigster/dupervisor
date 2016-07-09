@@ -1,28 +1,15 @@
-module Dupervisor
-  class Detector
-    attr_accessor :config
-    def initialize(config)
-      self.config = config
+module DuperVisor
+  class ExtensionDetector
+    attr_accessor :filename
+    def initialize(filename)
+      self.filename = filename
     end
 
-    def detect_output
-      return config.to if config.to
-      if config.output.is_a?(String)
-        config.to = format_from_extension(config.output.dup)
-      end
-      config.to
-    end
-
-    def detect_input(body = nil)
-      return config.from if config.from && !config.from.eql?(:auto)
-      if config.input.is_a?(String)
-        config.from = format_from_extension(config.input.dup)
-      end
-      config.from
+    def detect
+      format_from_extension(filename) if filename.is_a?(String)
     end
 
     private
-
 
     def format_from_extension(filename)
       extension = filename.gsub(/.*\.([\w]+)/, '\1')
@@ -32,6 +19,5 @@ module Dupervisor
       end
       format
     end
-
   end
 end
