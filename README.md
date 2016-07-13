@@ -8,7 +8,7 @@
 
 DuperVisor offers an easy way to convert configuration between any one of the supported formats, which at this time are: JSON, YAML, and Windows INI format. 
 
-For real-life applications and purpose of this gem, please read the [section "Motivation"](#Motivation) below.
+For real-life applications and purpose of this gem, please read the [section "Motivation"](#motivation) below.
 
 If you enjoy using this converter, please star the repo and we very much welcome all pull requests and contributions.
 
