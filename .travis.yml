@@ -4,7 +4,7 @@ env:
 rvm:
   - 2.2.3
   - 2.3.0
-script: "gem install bundler --version 1.12.5 --no-ri --no-rdoc; bundle exec rspec --format documentation"
+script: "bundle exec rspec --format documentation"
 notifications:
   slack:
     rooms:
