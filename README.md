@@ -4,13 +4,17 @@
 [![Test Coverage](https://codeclimate.com/github/kigster/dupervisor/badges/coverage.svg)](https://codeclimate.com/github/kigster/dupervisor/coverage)
 [![Issue Count](https://codeclimate.com/github/kigster/dupervisor/badges/issue_count.svg)](https://codeclimate.com/github/kigster/dupervisor)
 
-# DuperVisor™ Pro 
+# dupervisor
 
-DuperVisor offers an easy way to convert configuration between any one of the supported formats, which at this time are: JSON, YAML, and Windows INI format. 
+The rubby gem `dupervisor` is a well tested library that offers an easy way to convert configuration between any two of the supported formats, which are:  
 
-For real-life applications and purpose of this gem, please read the [section "Motivation"](#motivation) below.
+ * JSON
+ * YAML
+ * and the Windows INI file formats. 
 
-If you enjoy using this converter, please star the repo and we very much welcome all pull requests and contributions.
+Please see the [section "Motivation"](#motivation) below, which contains further discussion about why this is useful.
+
+If you enjoy using this library, please star the repo, and do submit pull requests and/or bug reports, as well as any other contributions – which are all accepted with gratitude.
 
 ## YAML/JSON vs INI
 
