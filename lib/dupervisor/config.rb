@@ -7,11 +7,10 @@ module DuperVisor
   end
 
   class Config
-    attr_accessor :to, :output, :verbose
+    attr_accessor :to, :output
 
-    def initialize(to: nil, output: nil, verbose: false)
+    def initialize(to: nil, output: nil)
       self.to      = to
-      self.verbose = verbose
       self.output  = output
     end
 
