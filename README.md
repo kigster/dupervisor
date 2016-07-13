@@ -90,6 +90,19 @@ gem 'dupervisor'
 
 ## Usage
 
+To perform translations in code, you would use `DuperVisor::Parser` class to parse an existing format, and `DuperVisor::Renderer` class to convert the intermediary hash into the destination format:
+
+```ruby
+      @format  = Detector.new('myfile.json').detect  # => :json
+
+      @content = Parser.new(File.read('myfile.json')).parse()      # guesses the source format 
+      @content = Parser.new(File.read('myfile.json')).parse(:json) # specify which format to parse from
+      @content.format # => :json
+      @content.parse_result # => { ... } Hash  
+
+      Renderer.new(content.parse_result).render(:yaml) # => YAML string
+```
+
 You can use the provided executable `dupervisor` to convert from a JSON or YAML file into an INI
 
 ### `dv [source-file] [options]`
