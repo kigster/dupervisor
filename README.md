@@ -6,7 +6,7 @@
 
 # dupervisor
 
-The rubby gem `dupervisor` is a well tested library that offers an easy way to convert configuration between any two of the supported formats, which are:  
+Ruby gem `dupervisor` is a well tested library that offers an easy way to convert configuration between any two of the supported formats, which (at this time) are:  
 
  * JSON
  * YAML
@@ -136,6 +136,32 @@ __Guess input format, convert INI format to a JSON file:__
 ```bash
 $ dv config.ini --json -o config.json
 ```
+
+## Adding New Formats
+
+It should be relatively trivial to add new formats to the gem. Please check out the `lib/dupervisor/formats` folder, copy eg. `yaml.rb` file to a new name, and update the code.
+
+Below is the actual code of YAML converter. 
+
+```ruby
+module DuperVisor
+  module Formats
+    class YAML < Base
+      aliases %i(yml)
+      from    ->(string)  { ::YAML.load(string) }
+      to      ->(hash)    { ::YAML.dump(hash)   }
+      errors  [Psych::SyntaxError]
+    end
+  end
+end
+```
+
+ * __aliases__ are additional names of the format. Main name is the class name without the modules.
+ * __from__ is a proc that receives a string, and should return a hash or raise an error.
+ * __to__ is a proc that receives a hash, and is supposed to return a string representing the hash in a given format.
+ * __errors__ is a list of exceptions that parsing (`#to`) may raise if the content is not valid for this format.
+
+
 ## Motivation
 
 This tool was originally created to allow storing as YAML configuration of [__supervisord__](http://supervisord.org), which uses a [decades old configuration file format](http://supervisord.org/configuration.html) known as the Windows INI file.

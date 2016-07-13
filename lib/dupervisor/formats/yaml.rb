@@ -10,5 +10,4 @@ module DuperVisor
       errors  [Psych::SyntaxError]
     end
   end
-
 end
