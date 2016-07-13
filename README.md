@@ -6,13 +6,11 @@
 
 # DuperVisor™ Pro 
 
-The super-duper awesome library is your best friend if you want an easy way to convert configuration between any one of the supported formats, which at this time are: JSON, YAML, and Windows INI format. 
+DuperVisor offers an easy way to convert configuration between any one of the supported formats, which at this time are: JSON, YAML, and Windows INI format. 
 
-This tool was originally created to allow storing configs of another great tool called [__supervisord__](http://supervisord.org), which is still highly applicable today, but unfortunately uses a rather [archaic configuration file format](http://supervisord.org/configuration.html) of the decades old Windows INI format.
+For real-life applications and purpose of this gem, please read the [section "Motivation"](#Motivation) below.
 
-Whatever your preferences are, the truth is that some of the modern DevOps tools (such as Ansible and SaltStack) are using YAML format extensively to configure the environments. Ability to "embed" YAML configuration for a tool like supervisord means that you don't have to go to multiple places to see what is being run everywhere.
-
-If you enjoy using this converted, please star the repo and we very much welcome all pull requests and contributions.
+If you enjoy using this converter, please star the repo and we very much welcome all pull requests and contributions.
 
 ## YAML/JSON vs INI
 
@@ -23,25 +21,12 @@ Consider the following example taken from the [_supervisord_ configuration docum
 nodaemon = false
 minfds = 1024
 minprocs = 200
-umask = 022
-user = chrism
-identifier = supervisor
-directory = /tmp
-nocleanup = true
-childlogdir = /tmp
-strip_ansi = false
-environment = PATH="/usr/bin:/usr/local/bin:/bin:/sbin",ENVIRONMENT="development"
 
 [program:cat]
 command=/bin/cat
 process_name=%(program_name)s
-numprocs=1
-directory=/tmp
-umask=022
-priority=999
 autostart=true
 autorestart=unexpected
-
 ```
 
 We think that it is much easier to read this:
@@ -51,28 +36,22 @@ supervisord:
   nodaemon: false
   minfds: 1024
   minprocs: 200
-  umask: 022
-  user: chrism
-  identifier: supervisor
-  directory: /tmp
-  nocleanup: true
-  childlogdir: /tmp
-  strip_ansi: false
-  environment: PATH="/usr/bin:/usr/local/bin:/bin:/sbin",ENVIRONMENT="development"
 
 program:
   cat:
     command: /bin/cat
     process_name: %(program_name)s
-    numprocs: 1
-    directory: /tmp
-    umask: 022
-    priority: 999
     autostart: true
     autorestart: unexpected
 ```
 
-Not only that, but with this structure you can leverage existing tools for merging information from the default environment to your production, and so on.
+Besides arguably better readability, YAML format also allows you to leverage existing configuration management tools such as Chef, SaltStack or Ansible.
+
+### Supervisord Specifics
+
+When parsing INI files, and upon encountering a hash key of the form `word1:word2`, such key is broken up into the two parts and second part is used to create a sub-hash, thus generating a three-level hash. Supervisord uses this syntax for describing all commands to run, such as `program:cat` or `program:pgbouncer`, etc. Parser for INI format will create a hash with keys `cat` and `pgbouncer`, which itself will be mapped to the key `program`. 
+
+Reverse is also true – and such a three-level hash will be collapsed by joining second and third level keys with a colon, before rendering INI file.
 
 ## Installation
 
@@ -90,12 +69,13 @@ gem 'dupervisor'
 
 ## Usage
 
-To perform translations in code, you would use `DuperVisor::Parser` class to parse an existing format, and `DuperVisor::Renderer` class to convert the intermediary hash into the destination format:
+### From Ruby Code
+
+To perform config transformations in ruby, you would typically use the `DuperVisor::Parser` class to parse an existing format and, optionally, to guess the format of the content. 
+
+You would then use the `DuperVisor::Renderer` class to render the intermediate hash into the destination format, like so:
 
 ```ruby
-# This helper extracts format from a file extension
-Detector.new('myfile.json').detect  # => :json
-
 # This is how you can parse content by specifying the format
 content = Parser.new(File.read('myfile.json')).parse(:json) 
 
@@ -110,39 +90,55 @@ content.parse_result # => { ... } Hash
 Renderer.new(content.parse_result).render(:yaml) # => YAML string
 ```
 
-You can use the provided executable `dupervisor` to convert from a JSON or YAML file into an INI
+There is an additional helper available to grab format from a filename:
 
-### `dv [source-file] [options]`
+```ruby
+# This helper extracts format from a file extension
+Detector.new('myfile.json').detect  # => :json
+```
 
-Summary: convert between several hierarchical configuration file formats, such as ini, yaml, json
-Automatically guesses the source format based either on the file extension, or by attempting to parse it for STDIN.
+### Command Line
 
-#### Specific Options
+You can also use the provided executable `dv` to transform between supported formats.
+
+```bash
+$ dv [source_file | STDIN ] 
+     [ --yaml | --ini | --json ] 
+     [ -o | --output output_file | STDOUT ]
+```
+
+#### CLI Options
 
 ```
-        --ini                        Generate an INI file
-        --yaml                       Generate a YAML file
-        --json                       Generate a JSON file
-    -o, --output [FILE]              File to write, if not supplied write to STDOUT
-    -v, --verbose                    Print extra debugging info
-    -h, --help                       Show this message
-        --version                    Show version
+        --ini            Generate an INI file
+        --yaml           Generate a YAML file
+        --json           Generate a JSON file
+    -o, --output [FILE]  File to write, if not supplied write to STDOUT
+    -v, --verbose        Print extra debugging info
+    -h, --help           Show this message
+        --version        Show version
 ```
 
 #### Examples
 
 __Guess input format, convert YAML format to an INI file:__
 
-```
+```bash
 $ cat config.yml | dv --ini > config.ini
 ```
 
 __Guess input format, convert INI format to a JSON file:__
 
-```
+```bash
 $ dv config.ini --json -o config.json
 ```
+## Motivation
 
+This tool was originally created to allow storing as YAML configuration of [__supervisord__](http://supervisord.org), which uses a [decades old configuration file format](http://supervisord.org/configuration.html) known as the Windows INI file.
+
+Some of the modern DevOps tools (such as Ansible and SaltStack) are using YAML format extensively to configure the environments. Chef stores node attributes as a hash, which is DuperVisor's intermediate data structure. Therefore DuperVisor offers an opportunity to "embed" INI-files for tools like _supervisord_ natively within the configuration management software, to keep all configuration centralized. When configuration management tool executes, INI files can be re-rendered on the fly. 
+
+Note that the same applies to rendering into YAML or JSON, and that the source could also be any one of the three.
 
 ## Contributing
 

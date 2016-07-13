@@ -17,6 +17,10 @@ module DuperVisor
       self.content = Parser.new(ARGF.read).parse(from_format)
       Renderer.new(content.parse_result, config.output).render(config.to)
     rescue DuperVisor::Parser::ParseError => e
+      report_error(e)
+    end
+
+    def report_error(e)
       puts '  Error:'.bold.white + ' Unable to parse input.'.bold.red
       puts 'Details:'.bold.white + " #{e.inspect}".red
     end
