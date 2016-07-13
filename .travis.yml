@@ -4,7 +4,7 @@ env:
 rvm:
   - 2.2.3
   - 2.3.0
-script: "gem install bundler --version 1.12.5 --no-ri --no-rdoc; bundle exec rspec"
+script: "gem install bundler --version 1.12.5 --no-ri --no-rdoc; CODECLIMATE_REPO_TOKEN=49ca8c0e2d56ab70e7eabc237692e21cc8fe43ef13ed5d411fa20bf1e8997a44 bundle exec rspec"
 notifications:
   slack:
     rooms:
