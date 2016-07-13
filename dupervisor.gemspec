@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['kigster@gmail.com']
 
   spec.summary       = %q{Convert between YAML/JSON format and Windows INI format. }
-  spec.description   = %q{This gem's purpose in life is to convert a configuration stored in a hierarchical hash (YAML/JSON) and into the Windows INI file format frmo the Dark Ages. It's named after a popular package supervisord, which uses INI file format for it's configuration. If you are using supervisord or any other software, with the help of this gem you can stop editing INI files and enjoy the readability of YAML.}
-  spec.homepage      = 'https://guthub.com/kigster/DuperVisor'
+  spec.description   = %q{This gem's purpose in life is to freely convert various configurations between supported formats, which are currently YAML, JSON and Windows INI file format. The gem is named after a popular package supervisord, which uses INI file format for it's configuration. This gem will allow you to move supervisord configuration into a YAML file, and integrate with other DevOps tools, while generating INI file on the fly. When installed, library exposes 'dv' executable, which is a an easy-to-use converter between these three formats.} 
+  spec.homepage      = 'https://github.com/kigster/dupervisor'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = 'exe'
