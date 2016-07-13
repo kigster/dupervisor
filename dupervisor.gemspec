@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dupervisor/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'DuperVisor'
+  spec.name          = 'dupervisor'
   spec.version       = DuperVisor::VERSION
   spec.authors       = ['Konstantin Gredeskoul']
   spec.email         = ['kigster@gmail.com']
