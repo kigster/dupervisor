@@ -1,5 +1,5 @@
-require 'YAML'
-require 'JSON'
+require 'yaml'
+require 'json'
 require 'inifile'
 
 module DuperVisor
