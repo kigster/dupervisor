@@ -13,7 +13,7 @@ supervisord:
   nodaemon: false
   pidfile: /tmp/supervisord.pid
   strip_ansi: false
-  umask: 022
+  umask: '022'
   user: chrism
 
 program:
@@ -23,7 +23,7 @@ program:
     command: /bin/cat
     directory: /tmp
     environment: A="1",B="2"
-    exitcodes: 0,2
+    exitcodes: '0,2'
     killasgroup: false
     numprocs: 1
     priority: 999
@@ -45,5 +45,5 @@ program:
     stopasgroup: false
     stopsignal: TERM
     stopwaitsecs: 10
-    umask: 022
+    umask: '022'
     user: chrism

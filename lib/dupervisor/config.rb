@@ -1,5 +1,5 @@
 require_relative 'content'
-require_relative 'generator'
+require_relative 'renderer'
 require_relative 'detector'
 
 module DuperVisor
@@ -7,7 +7,7 @@ module DuperVisor
   end
 
   class Config
-    attr_accessor :from, :to, :output, :input, :verbose
+    attr_accessor :to, :output, :verbose
 
     def initialize(to: nil, output: nil, verbose: false)
       self.to      = to
@@ -16,21 +16,15 @@ module DuperVisor
     end
 
     def validate!
-      construct
       raise CLIError.new('Either the output format or filename is required!') unless to
-      self
+
+      self.output = if output.is_a?(String) && output != ''
+                      File.open(output, 'w')
+                    elsif output.respond_to?(:puts)
+                      output
+                    else
+                      STDOUT
+                    end
     end
-
-    private
-
-
-    def construct
-      self.input  = Content.new(body:   ARGF.read,
-                                format: ExtensionDetector.new(ARGF.filename).detect)
-      self.from   ||= input.format
-      self.to     = ExtensionDetector.new(output).detect unless to
-      self.output = output.is_a?(String) && output != '' ? File.open(output, 'w') : STDOUT
-    end
-
   end
 end

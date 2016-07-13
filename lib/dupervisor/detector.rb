@@ -1,5 +1,5 @@
 module DuperVisor
-  class ExtensionDetector
+  class Detector
     attr_accessor :filename
     def initialize(filename)
       self.filename = filename

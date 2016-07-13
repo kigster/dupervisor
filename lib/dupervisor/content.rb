@@ -3,61 +3,25 @@ require 'JSON'
 require 'inifile'
 
 module DuperVisor
+  #
+  # This class is responsible for taking the input and converting it into a
+  # Hash. It can also be initialized with the Hash, in which no conversion is performed.
+  #
+  # The +result+
   class Content
-    class ParseError < StandardError
-    end
-
-    attr_accessor :body, :hash, :format, :errors
+    attr_accessor :body, :format, :parse_result
 
     def initialize(body: nil, format: nil)
       self.body   = body
-      self.hash   = {}
-      self.format = parse(format) || autodetect
-      self.errors = {}
+      self.format = format
+      self.parse_result = {}
     end
 
-    def success?
-      !self.hash.empty?
-    end
-
-    def error(format)
-      errors[format]
-    end
-
-    def parse(format)
-      send("#{format}_check") if format
-    end
-
-    def autodetect
-      %i(yaml json ini).each do |format|
-        begin
-          read(format)
-        rescue ParseError => e
-          errors[format] = e
-        end
-      end
-    end
-
-    def yaml_check
-      self.hash = YAML.load(body)
-      :yaml
-    rescue Psych::SyntaxError => e
-      raise ParseError.new(e)
-    end
-
-    def json_check
-      self.hash = JSON.parse(body)
-      :json
-    rescue JSON::ParserError => e
-      raise ParseError.new(e)
-    end
-
-    def ini_check
-      self.hash = IniFile.new(content: body).to_h
-      :ini
-    rescue IniFile::Error => e
-      raise ParseError.new(e)
+    def self.to_format_from(hash, format)
+      format_class = ::DuperVisor::Formats::Base.formats[format]
+      raise ArgumentError.new("No format #{format} found") unless format_class
+      Content.new(body: format_class.to.call(hash), format: format_class.format)
     end
   end
-
 end
+
