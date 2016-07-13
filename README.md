@@ -76,9 +76,15 @@ Not only that, but with this structure you can leverage existing tools for mergi
 
 ## Installation
 
-Install the gem using the `gem install dupervisor` command, or if you are using Bundler, you can add it to your gem file like so:
+Install the gem:
 
 ```
+gem install dupervisor
+``` 
+
+or, if you are using Bundler, you can add it to your gem file like so:
+
+```ruby
 gem 'dupervisor'
 ```
 
@@ -86,41 +92,41 @@ gem 'dupervisor'
 
 You can use the provided executable `dupervisor` to convert from a JSON or YAML file into an INI
 
+### `dv [source-file] [options]`
+
+Summary: convert between several hierarchical configuration file formats, such as ini, yaml, json
+Automatically guesses the source format based either on the file extension, or by attempting to parse it for STDIN.
+
+#### Specific Options
+
 ```
-Usage: dupervisor [options]
-
-       Convert between several hierarchical configuration
-       file formats, such as ini, yaml, json
-
-Specific options:
-        --ini                        Assume the output is INI file
-        --yaml                       Assume the output is YAML file
-        --json                       Assume the output is JSON file
-
-    -i, --input [FILE]               File to read, if not supplied read from STDIN
-                                     If provided, will be used to guess source format
-
+        --ini                        Generate an INI file
+        --yaml                       Generate a YAML file
+        --json                       Generate a JSON file
     -o, --output [FILE]              File to write, if not supplied write to STDOUT
-                                     If provided, will be used to guess destination format
-
     -v, --verbose                    Print extra debugging info
-
-Examples:
-
-    # guess input format, write output in INI
-    cat config.yml | dupervisor --ini > config.ini
-
-    # convert from INI to JSON using file extensions for format
-    dupervisor -i config.ini -f config.json
-
-Common options:
     -h, --help                       Show this message
         --version                    Show version
 ```
 
+#### Examples
+
+__Guess input format, convert YAML format to an INI file:__
+
+```
+$ cat config.yml | dv --ini > config.ini
+```
+
+__Guess input format, convert INI format to a JSON file:__
+
+```
+$ dv config.ini --json -o config.json
+```
+
+
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/kigster/warp-dir.
+Bug reports and pull requests are welcome on GitHub at https://github.com/kigster/dupervisor.
 
 ## Author
 
