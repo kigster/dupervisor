@@ -6,7 +6,7 @@
 
 # dupervisor
 
-Ruby gem `dupervisor` is a well tested library that offers an easy way to convert configuration between any two of the supported formats, which (at this time) are:  
+`dupervisor` is a Ruby gem and a well tested library, as well as a CLI executable, that offer an easy way to convert configuration between any two of the supported formats, which (at this time) are:  
 
  * JSON
  * YAML
