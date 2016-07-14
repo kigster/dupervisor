@@ -13,4 +13,6 @@ rescue DuperVisor::CLIError => e
   STDERR.puts 'Usage error: ' + e.message.bold.red
   puts
   DuperVisor::CLI.new(['--help']).parse
+rescue StandardError => e
+  STDERR.puts 'Processing error: ' + e.message.bold.red
 end

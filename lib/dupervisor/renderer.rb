@@ -7,7 +7,7 @@ module DuperVisor
     attr_accessor :output, :content_hash, :rendered_content
 
     def initialize(content_hash, output_stream = nil)
-      raise ArgumentError.new('Invalid arguments - expecting a stream and a hash') unless content_hash.is_a?(Hash)
+      raise ArgumentError.new("Don't know how to render #{content_hash.class.name}, I was expecting a Hash.") unless content_hash.is_a?(Hash)
       self.output  = output_stream
       self.content_hash = content_hash
     end
