@@ -1,10 +1,21 @@
 language: ruby
 env:
-  - CODECLIMATE_REPO_TOKEN=49ca8c0e2d56ab70e7eabc237692e21cc8fe43ef13ed5d411fa20bf1e8997a44
+  global:
+    - CODECLIMATE_REPO_TOKEN=49ca8c0e2d56ab70e7eabc237692e21cc8fe43ef13ed5d411fa20bf1e8997a44
 rvm:
-  - 2.2.3
-  - 2.3.0
-script: "bundle exec rspec --format documentation"
+  - 2.2.9
+  - 2.3.6
+  - 2.4.3
+  - 2.5.0
+cache:
+- bundler
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+script: bundle exec rspec
 notifications:
   slack:
     rooms:

@@ -1,8 +1,11 @@
 require 'dupervisor/version'
 require 'require_dir'
 module DuperVisor
-  extend RequireDir
-  init_from_source __FILE__
+  RequireDir.enable_require_dir! self, __FILE__
+  dir_r 'dupervisor'
 end
 
-DuperVisor.dir_r 'dupervisor'
+
+
+
+
