@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'json'
 require 'inifile'
@@ -19,9 +21,9 @@ module DuperVisor
 
     def self.to_format_from(hash, format)
       format_class = ::DuperVisor::Formats::Base.formats[format]
-      raise ArgumentError.new("No format #{format} found") unless format_class
+      raise ArgumentError, "No format #{format} found" unless format_class
+
       Content.new(body: format_class.to.call(hash), format: format_class.format)
     end
   end
 end
-

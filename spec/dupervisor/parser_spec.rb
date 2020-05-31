@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'dupervisor/parser'
+require 'dupervisor/errors'
 
 module DuperVisor
-
   RSpec.describe Parser do
     let(:parser) { Parser.new(body) }
     let(:parsed_result) { { 'main' => { 'first' => 'Bob', 'last' => 'Marley' } } }
@@ -40,10 +42,12 @@ module DuperVisor
 
       context 'with third level hash' do
         let(:body) { "[main]\nfirst = Bob\nlast = Marley\n\n[program:pgbouncer]\ncmd = /usr/local/bin/pgbouncer" }
-        let(:parsed_result) { {
-          'main'    => { 'first' => 'Bob', 'last' => 'Marley' },
-          'program' => { 'pgbouncer' => { 'cmd' => '/usr/local/bin/pgbouncer' } }
-        } }
+        let(:parsed_result) {
+          {
+            'main' => { 'first' => 'Bob', 'last' => 'Marley' },
+            'program' => { 'pgbouncer' => { 'cmd' => '/usr/local/bin/pgbouncer' } }
+          }
+        }
         verify_hash(:ini)
       end
     end
@@ -53,7 +57,7 @@ module DuperVisor
       %i(ini yaml yml json).each do |format|
         context "and the format is #{format}" do
           it 'should raise parse error' do
-            expect { parser.parse(format) }.to raise_error(Parser::ParseError)
+            expect { parser.parse(format) }.to raise_error(Errors::ParseError)
           end
         end
       end

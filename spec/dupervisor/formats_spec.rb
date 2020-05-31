@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'dupervisor/formats'
 
+# rubocop: disable Style/GuardClause
 module DuperVisor
   RSpec.describe Formats do
     let(:base) { DuperVisor::Formats::Base }
@@ -18,12 +21,12 @@ module DuperVisor
         aliases :burp
         from ->(body) {
           if body =~ /burp/
-            raise BlurpError.new('No burping!')
+            raise BlurpError, 'No burping!'
           else
             { blurp: 'boo' }
           end
         }
-        to ->(hash) { 'blurp' }
+        to ->(_hash) { 'blurp' }
         errors BlurpError
       end
 
@@ -69,5 +72,6 @@ module DuperVisor
       end
     end
   end
-
 end
+
+# rubocop: enable Style/GuardClause

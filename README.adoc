@@ -1,0 +1,238 @@
+= `dupervisor`
+
+:doctype: book
+:toc:
+
+image:https://badge.fury.io/rb/dupervisor.svg[Gem Version,link=https://badge.fury.io/rb/dupervisor]
+image:https://travis-ci.org/kigster/dupervisor.svg?branch=master[Build Status,link=https://travis-ci.org/kigster/dupervisor]
+image:https://codeclimate.com/github/kigster/dupervisor/badges/gpa.svg[Code Climate,link=https://codeclimate.com/github/kigster/dupervisor]
+image:https://codeclimate.com/github/kigster/dupervisor/badges/coverage.svg[Test Coverage,link=https://codeclimate.com/github/kigster/dupervisor/coverage]
+image:https://codeclimate.com/github/kigster/dupervisor/badges/issue_count.svg[Issue Count,link=https://codeclimate.com/github/kigster/dupervisor]
+
+image:https://github.com/kigster/dupervisor/workflows/Rubocop/badge.svg[Rubocop,link=https://github.com/kigster/dupervisor/actions?query=workflow%3ARubocop]
+image:https://github.com/kigster/dupervisor/workflows/Ruby/badge.svg[RSpec,link=https://github.com/kigster/dupervisor/actions?query=workflow%3ARuby]
+
+== Ruby Gem for `JSON/YAML/INI` file conersions
+
+`dupervisor` is a Ruby gem and a well tested library, as well as a CLI executable, that offer an easy way to convert configuration between any two of the supported formats, which (at this time) are:
+
+* JSON
+* YAML
+* and the Windows INI file formats.
+
+Please see the <<motivation,section "Motivation">> below, which contains further discussion about why this is useful.
+
+If you enjoy using this library, please star the repo, and do submit pull requests and/or bug reports, as well as any other contributions -- which are all accepted with gratitude.
+
+== YAML/JSON vs INI
+
+Consider the following example taken from the http://supervisord.org/configuration.html[supervisord configuration documentation]:
+
+[source,ini]
+----
+[supervisord]
+nodaemon = false
+minfds = 1024
+minprocs = 200
+
+[program:cat]
+command=/bin/cat
+process_name=%(program_name)s
+autostart=true
+autorestart=unexpected
+----
+
+We think that it is much easier to read this YAML below, so we wrote a converter that can take the above file and convert to YAML or JSON. Let's say that the above file is called `supervisord.ini`.
+
+Then, after we run the command:
+
+[source,bash]
+----
+gem install dupervisor
+dv supervisord.ini --yaml
+----
+
+Will print the following to your terminal:
+
+[source,yaml]
+----
+supervisord:
+  nodaemon: false
+  minfds: 1024
+  minprocs: 200
+
+program:
+  cat:
+    command: /bin/cat
+    process_name: %(program_name)s
+    autostart: true
+    autorestart: unexpected
+----
+
+
+Of course you can save the output to a file instead,
+
+
+[source,json]
+----
+{
+  "supervisord": {
+    "nodaemon": false,
+    "minfds": 1024,
+    "minprocs": 200
+  },
+  "program": {
+    "cat": {
+      "command": "/bin/cat",
+      "process_name": "%(program_name)s",
+      "autostart": true,
+      "autorestart": "unexpected"
+    }
+  }
+}
+----
+
+Besides arguably better readability, YAML format also allows you to leverage existing configuration management tools such as Chef, SaltStack or Ansible.
+
+=== Supervisord Specifics
+
+When parsing INI files, and upon encountering a hash key of the form `word1:word2`, such key is broken up into the two parts and second part is used to create a sub-hash, thus generating a three-level hash. Supervisord uses this syntax for describing all commands to run, such as `program:cat` or `program:pgbouncer`, etc. Parser for INI format will create a hash with keys `cat` and `pgbouncer`, which itself will be mapped to the key `program`.
+
+Reverse is also true -- and such a three-level hash will be collapsed by joining second and third level keys with a colon, before rendering INI file.
+
+== Installation
+
+Install the gem:
+
+----
+gem install dupervisor
+----
+
+or, if you are using Bundler, you can add it to your gem file like so:
+
+[source,ruby]
+----
+gem 'dupervisor'
+----
+
+== Usage
+
+=== From Ruby Code
+
+To perform config transformations in ruby, you would typically use the `DuperVisor::Parser` class to parse an existing format and, optionally, to guess the format of the content.
+
+You would then use the `DuperVisor::Renderer` class to render the intermediate hash into the destination format, like so:
+
+[source,ruby]
+----
+# This is how you can parse content by specifying the format
+content = Parser.new(File.read('myfile.json')).parse(:json)
+
+# But the gem can also guess the source format from either
+# the filename (if available) or the source content
+content = Parser.new(File.read('myfile.json')).parse()
+content.format # => :json
+content.parse_result # => { ... } Hash
+
+# Finally, here we are using Renderer to convert a hash stored
+# in content.parse_result into a YAML formatted string.
+Renderer.new(content.parse_result).render(:yaml) # => YAML string
+----
+
+There is an additional helper available to grab format from a filename:
+
+[source,ruby]
+----
+# This helper extracts format from a file extension
+Detector.new('myfile.json').detect  # => :json
+----
+
+=== Command Line
+
+You can also use the provided executable `dv` to transform between supported formats.
+
+[source,bash]
+----
+$ dv [source_file | STDIN ]
+     [ --yaml | --ini | --json ]
+     [ -o | --output output_file | STDOUT ]
+----
+
+==== CLI Options
+
+----
+        --ini            Generate an INI file
+        --yaml           Generate a YAML file
+        --json           Generate a JSON file
+    -o, --output [FILE]  File to write, if not supplied write to STDOUT
+    -v, --verbose        Print extra debugging info
+    -h, --help           Show this message
+        --version        Show version
+----
+
+==== Examples
+
+*Guess input format, convert YAML format to an INI file:*
+
+[source,bash]
+----
+$ cat config.yml | dv --ini > config.ini
+----
+
+*Guess input format, convert INI format to a JSON file:*
+
+[source,bash]
+----
+$ dv config.ini --json -o config.json
+----
+
+== Adding New Formats
+
+It should be relatively trivial to add new formats to the gem. Please check out the `lib/dupervisor/formats` folder, copy eg. `yaml.rb` file to a new name, and update the code.
+
+Below is the actual code of YAML converter.
+
+[source,ruby]
+----
+module DuperVisor
+  module Formats
+    class YAML < Base
+      aliases %i(yml)
+      from    ->(string)  { ::YAML.load(string) }
+      to      ->(hash)    { ::YAML.dump(hash)   }
+      errors  [Psych::SyntaxError]
+    end
+  end
+end
+----
+
+* *aliases* are additional names of the format. Main name is the class name without the modules.
+* *from* is a proc that receives a string, and should return a hash or raise an error.
+* *to* is a proc that receives a hash, and is supposed to return a string representing the hash in a given format.
+* *errors* is a list of exceptions that parsing (`#to`) may raise if the content is not valid for this format.
+
+== Motivation
+
+This tool was originally created to allow storing as YAML configuration of http://supervisord.org[*supervisord*], which uses a http://supervisord.org/configuration.html[decades old configuration file format] known as the Windows INI file.
+
+Some of the modern DevOps tools (such as Ansible and SaltStack) are using YAML format extensively to configure the environments. Chef stores node attributes as a hash, which is DuperVisor's intermediate data structure. Therefore DuperVisor offers an opportunity to "embed" INI-files for tools like _supervisord_ natively within the configuration management software, to keep all configuration centralized. When configuration management tool executes, INI files can be re-rendered on the fly.
+
+Note that the same applies to rendering into YAML or JSON, and that the source could also be any one of the three.
+
+== Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/kigster/dupervisor.
+
+== Author
+
+&copy; 2016 Konstantin Gredeskoul, all rights reserved.
+
+[discrete]
+==== Acknowledgements
+
+* https://goshippo.com/[Shippo, Inc.] for sponsoring this work financially, and their commitment to open source.
+* https://github.com/bosswissam[Wissam Jarjoul] for many great ideas and a good eye for bugs.
+
+== License
+
+This project is distributed under the https://raw.githubusercontent.com/kigster/dupervisor/master/LICENSE[MIT License].

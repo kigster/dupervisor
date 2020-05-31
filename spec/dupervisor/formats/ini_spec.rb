@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module DuperVisor
   module Formats
-
     RSpec.describe Ini do
       let(:hash) {
         {
           'supervisord' => { 'root' => '/var/supervisord' },
-          'program'     => {
+          'program' => {
             'pgbouncer' => { 'command' => '/usr/local/bin/pgbouncer' }
           }
         }

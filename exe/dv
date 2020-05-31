@@ -1,18 +1,40 @@
 #!/usr/bin/env ruby -W0
+# frozen_string_literal: true
+
 lib_path = File.dirname(__FILE__) + '/../lib'
-if Dir.exist?(lib_path)
-  $LOAD_PATH << lib_path
-end
+$LOAD_PATH << lib_path if Dir.exist?(lib_path)
+
 require 'colored2'
 require 'dupervisor'
 require 'awesome_print'
 
-begin
-  DuperVisor::Main.new(DuperVisor::CLI.new(ARGV).parse).run
-rescue DuperVisor::CLIError => e
-  STDERR.puts 'Usage error: ' + e.message.bold.red
-  puts
-  DuperVisor::CLI.new(['--help']).parse
-rescue StandardError => e
-  STDERR.puts 'Processing error: ' + e.message.bold.red
+# rubocop: disable Style/StderrPuts
+class Runner
+  attr_reader :config
+
+  def initialize(argv = ARGV.dup)
+    @config = DuperVisor::CLI.new(argv).parse
+  end
+
+  def run!
+    DuperVisor::Main.new(config).run
+  rescue DuperVisor::CLIError => e
+    warn "Usage error: #{e.message.bold.red}\n\n"
+    DuperVisor::CLI.new(['--help']).parse
+  rescue StandardError => e
+    warn "Processing error: #{e.inspect}".bold.red
+    if config&.trace
+      shift = '    '
+      warn shift + e.backtrace.join("\n#{shift}").bold
+    end
+  end
+
+  private
+
+  def warn(*msg)
+    STDERR.puts msg.join("\n").bold.red
+  end
 end
+# rubocop: enable Style/StderrPuts
+
+Runner.new.run!
