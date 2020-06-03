@@ -3,10 +3,11 @@ env:
   global:
     - CODECLIMATE_REPO_TOKEN=49ca8c0e2d56ab70e7eabc237692e21cc8fe43ef13ed5d411fa20bf1e8997a44
 rvm:
-  - 2.2.9
   - 2.3.6
   - 2.4.3
   - 2.5.0
+  - 2.6.5
+  - 2.7.1
 cache:
 - bundler
 before_script:
