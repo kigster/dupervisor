@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'content'
 require_relative 'renderer'
 require_relative 'detector'
@@ -7,7 +9,7 @@ module DuperVisor
   end
 
   class Config
-    attr_accessor :to, :output
+    attr_accessor :to, :output, :trace
 
     def initialize(to: nil, output: nil)
       self.to      = to
@@ -15,7 +17,7 @@ module DuperVisor
     end
 
     def validate!
-      raise CLIError.new('Either the output format or filename is required!') unless to
+      raise CLIError, 'Either the output format or filename is required!' unless to
 
       self.output = if output.is_a?(String) && output != ''
                       File.open(output, 'w')

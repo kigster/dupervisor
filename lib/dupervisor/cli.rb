@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'optparse'
 require 'optparse/time'
 require 'ostruct'
@@ -25,8 +27,7 @@ module DuperVisor
       config
     end
 
-    class OptionsDecorator < Struct.new(:opts, :config)
-
+    OptionsDecorator = Struct.new(:opts, :config) do
       def flags
         opts.separator 'Options:'.bold.blue.underlined
         opts.separator '  Output Format:'.bold.yellow
@@ -43,6 +44,12 @@ module DuperVisor
 
         # No argument, shows at tail.  This will print an options summary.
         # Try it and see!
+        opts.on('-t', '--trace', 'Show exception stack trace') do
+          config.trace = true
+        end
+
+        # No argument, shows at tail.  This will print an options summary.
+        # Try it and see!
         opts.on('-h', '--help', 'Show this message') do
           puts opts
           exit
@@ -53,7 +60,6 @@ module DuperVisor
           puts DuperVisor::VERSION
           exit
         end
-
       end
 
       def examples
