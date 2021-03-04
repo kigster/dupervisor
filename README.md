@@ -3,6 +3,7 @@
 [![Code Climate](https://codeclimate.com/github/kigster/dupervisor/badges/gpa.svg)](https://codeclimate.com/github/kigster/dupervisor)
 [![Test Coverage](https://codeclimate.com/github/kigster/dupervisor/badges/coverage.svg)](https://codeclimate.com/github/kigster/dupervisor/coverage)
 [![Issue Count](https://codeclimate.com/github/kigster/dupervisor/badges/issue_count.svg)](https://codeclimate.com/github/kigster/dupervisor)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkigster%2Fdupervisor.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkigster%2Fdupervisor?ref=badge_shield)
 
 # dupervisor
 
@@ -186,3 +187,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/kigste
 ## License
 
 This project is distributed under the [MIT License](https://raw.githubusercontent.com/kigster/dupervisor/master/LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkigster%2Fdupervisor.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkigster%2Fdupervisor?ref=badge_large)
